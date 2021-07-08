@@ -8,7 +8,7 @@ import sys
 csvfile = "/var/www/lab_app/static/temp.csv"
 
 #####Einstellungen
-server_name = "Crypto_Miner"
+server_name = "2"
 #Wie oft wird das Programm gestartet?
 messung = 5 #in Minuten
 #Wie viele Tage sollen gespeichert werden?
