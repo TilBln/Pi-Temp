@@ -22,11 +22,16 @@ while True:
 	temp_int = int(temperature)
 	hum_int = int(humidity)
 	#Wenn mehr als 37°C herrschen, wird eine Mail versendet
-	if temp_int > 37:
+	email_check = Path('/var/www/lab_app/email.check')
+	if email_check.is_file() and temp_int < 37:
+		os.remove('/var/www/lab_app/email.check')
+	elif email_check.is_file():
+		print('sent no email')
+	elif temp_int > 37:
 		import smtplib
 		from email.mime.multipart import MIMEMultipart
 		from email.mime.text import MIMEText
-
+		
 		senderEmail = "transmitter@email"
 		empfangsEmail = "receiver@email"
 		msg = MIMEMultipart()
@@ -36,7 +41,7 @@ while True:
 
 		emailText = "Der Serverschrank " + str(server_name) + " hat eine Temperatur von " + str(temp_int) + "°C und ist damit zu heiß!"
 		msg.attach(MIMEText(emailText, 'html'))
-
+		
 		server = smtplib.SMTP('your.smtp.server', 587) # Die Server Daten
 		server.starttls()
 		server.login(senderEmail, "email.password") # Das Passwort
@@ -66,7 +71,7 @@ while True:
 		print('can not connect to the sensor!')
 
 	#Die Temperatur wird mit Zeitstempel abgespeichert in einer csv
-	timeC = time.strftime("%H:%M:%S")
+	timeC = time.strftime("%d.%m|%H:%M:%S")
 	data = [temperature, timeC]
 	with open(csvfile, "a")as output:
 		writer = csv.writer(output, delimiter=",", lineterminator = '\n')
